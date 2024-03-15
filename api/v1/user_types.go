@@ -1,5 +1,5 @@
 /*
-Copyright 2024.
+Copyright 2023.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,22 +20,24 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // UserSpec defines the desired state of User
 type UserSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	AwsAccount *AwsAccountNestedSpec `json:"awsAccount,omitempty"`
+}
 
-	// Foo is an example field of User. Edit user_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+type AwsAccountNestedSpec struct {
+	Spec AwsSpec `json:"spec,omitempty"`
+}
+
+type AwsSpec struct {
+	User AwsAccountSpec `json:"user,omitempty"`
 }
 
 // UserStatus defines the observed state of User
 type UserStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	AwsAccountCreated bool `json:"awsAccountCreated"`
 }
 
 //+kubebuilder:object:root=true

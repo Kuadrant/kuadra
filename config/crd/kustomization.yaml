@@ -6,10 +6,10 @@ resources:
 - bases/kuadra.kuadrant.io_users.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
-patches:
+#patches:
 # [WEBHOOK] To enable webhook, uncomment all the sections with [WEBHOOK] prefix.
 # patches here are for enabling the conversion webhook for each CRD
-- path: patches/webhook_in_awsaccounts.yaml
+#- path: patches/webhook_in_awsaccounts.yaml
 #- path: patches/webhook_in_users.yaml
 #+kubebuilder:scaffold:crdkustomizewebhookpatch
 
@@ -22,5 +22,5 @@ patches:
 # [WEBHOOK] To enable webhook, uncomment the following section
 # the following config is for teaching kustomize how to do kustomization for CRDs.
 
-configurations:
-- kustomizeconfig.yaml
+#configurations:
+#- kustomizeconfig.yaml
