@@ -99,6 +99,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	route53Wrapper, err := aws.NewRoute53Wrapper()
+	if err != nil {
+		setupLog.Error(err, "couldn't load AWS configuration")
+		os.Exit(1)
+	}
+
+	// Creating controllers
+
 	if err = (&controller.AwsAccountReconciler{
 		Client:     mgr.GetClient(),
 		Scheme:     mgr.GetScheme(),
@@ -107,18 +115,31 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "AwsAccount")
 		os.Exit(1)
 	}
-	if os.Getenv("ENABLE_WEBHOOKS") != "false" {
-		if err = (&kuadrav1.AwsAccount{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "CronJob")
-			os.Exit(1)
-		}
-	}
+
 	if err = (&controller.UserReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "User")
 		os.Exit(1)
+	}
+
+	if err = (&controller.Route53Reconciler{
+		Client:         mgr.GetClient(),
+		Scheme:         mgr.GetScheme(),
+		Route53Wrapper: *route53Wrapper,
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Route53")
+		os.Exit(1)
+	}
+
+	// Disable webhook if environment variable ENABLE_WEBHOOKS is set to false.
+
+	if os.Getenv("ENABLE_WEBHOOKS") != "false" {
+		if err = (&kuadrav1.AwsAccount{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "CronJob")
+			os.Exit(1)
+		}
 	}
 	//+kubebuilder:scaffold:builder
 
