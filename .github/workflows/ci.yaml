@@ -21,12 +21,16 @@ on:
 jobs:
   test_suite:
     name: Test Suite
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/checkout@v4
+      
+      - name: setting up go
+        uses: actions/setup-go@v5
         with:
-          go-version: v1.20
+          go-version-file: 'go.mod'
+      
+      - run: go version
+
       - name: Run suite
-        run: |
-          make test
+        run: make test
